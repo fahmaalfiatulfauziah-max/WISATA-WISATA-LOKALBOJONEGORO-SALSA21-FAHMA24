@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travoyage - Berita Wisata Bojonegoro</title>
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- BOOTSTRAP -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- GOOGLE FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cardo:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    text-align: center;
+    overflow-x: hidden;
+    position: relative;
+    background: #1f0535;
+}
+
+/* PROM BACKGROUND */
+.prom-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,#1f0535,#3b0a5b,#a58e03,#d6a100);
+    background-size: 400% 400%;
+    animation: promGradient 30s ease infinite;
+    z-index: -10;
+}
+
+@keyframes promGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.batik-overlay-prom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .25;
+    pointer-events: none;
+    z-index: -9;
+}
+
+.batik-overlay-prom::before {
+    content: '';
+    position: absolute;
+    width: 350%;
+    height: 350%;
+    top: -140%;
+    left: -140%;
+    background:
+        repeating-radial-gradient(circle, transparent 0, transparent 30px, rgba(255,215,0,0.25) 38px, rgba(255,215,0,0.25) 45px),
+        repeating-linear-gradient(45deg, transparent 0, transparent 120px, rgba(255,215,0,0.35) 130px, rgba(255,215,0,0.35) 200px);
+    background-size: 180px 180px;
+    animation: batikRoll 90s linear infinite;
+}
+
+@keyframes batikRoll {
+    0% { transform: rotate(0) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+.wayang-prom {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 380px;
+    height: 480px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: translate(-50%, -50%);
+    opacity: .35;
+    filter: drop-shadow(0 0 20px rgba(255,215,0,0.8));
+    pointer-events: none;
+    animation: wayangMove 35s ease-in-out infinite alternate;
+    z-index: -8;
+}
+
+@keyframes wayangMove {
+    0% { transform: translate(-60%, -60%) rotate(-6deg) scale(1); }
+    50% { transform: translate(-40%, -40%) rotate(6deg) scale(1.1); }
+    100% { transform: translate(-60%, -60%) rotate(-6deg) scale(1); }
+}
+
+#particles-prom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -7;
+}
+
+.particle-prom {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+}
+
+/* HERO */
+.hero {
+    padding: 60px 20px;
+}
+
+.hero-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: #f5d76e;
+    font-family: 'Cardo', serif;
+}
+
+/* CARD BERITA */
+.card-feature {
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 15px;
+    transition: all .4s ease;
+    max-width: 330px;
+    margin: auto;
+    cursor: pointer;
+}
+
+.card-feature:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 0 25px rgba(255,215,0,0.6);
+    border-color: #ffd700;
+}
+
+.card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.card-title-new {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffe599;
+    margin-top: 10px;
+    font-family: 'Cardo', serif;
+}
+
+.card-text-new {
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.row.g-4 {
+    justify-content: center;
+}
+
+@media(max-width:768px) {
+    .card-feature { max-width: 90%; }
+    .card-img-top { height: 180px; }
+}
+
+/* FOOTER */
+.footer {
+    padding: 20px;
+    font-size: 14px;
+    color: #fff;
+    background: rgba(0,0,0,0.3);
+}
+.footer a {
+    color: #ffd700;
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND PROM -->
+<div class="prom-gradient"></div>
+<div class="batik-overlay-prom"></div>
+<div class="wayang-prom"></div>
+<div id="particles-prom"></div>
+
+<script>
+const wrap = document.getElementById("particles-prom");
+const total = 80;
+const pts = [];
+
+for (let i = 0; i < total; i++) {
+    const el = document.createElement("div");
+    el.className = "particle-prom";
+    el.style.width = el.style.height = (Math.random() * 5 + 2) + "px";
+    el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.top = Math.random() * window.innerHeight + "px";
+    el.speedX = (Math.random() - 0.5) * 0.7;
+    el.speedY = (Math.random() - 0.5) * 0.7;
+    wrap.appendChild(el);
+    pts.push(el);
+}
+
+function animParticles() {
+    pts.forEach(p => {
+        let x = p.offsetLeft + p.speedX * 7;
+        let y = p.offsetTop + p.speedY * 7;
+        if (x < 0) x = window.innerWidth;
+        if (x > window.innerWidth) x = 0;
+        if (y < 0) y = window.innerHeight;
+        if (y > window.innerHeight) y = 0;
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+    });
+    requestAnimationFrame(animParticles);
+}
+animParticles();
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travoyage - Berita Wisata Bojonegoro</title>
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- BOOTSTRAP -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- GOOGLE FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cardo:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    text-align: center;
+    overflow-x: hidden;
+    position: relative;
+    background: #1f0535;
+}
+
+/* PROM BACKGROUND */
+.prom-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,#1f0535,#3b0a5b,#a58e03,#d6a100);
+    background-size: 400% 400%;
+    animation: promGradient 30s ease infinite;
+    z-index: -10;
+}
+
+@keyframes promGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.batik-overlay-prom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .25;
+    pointer-events: none;
+    z-index: -9;
+}
+
+.batik-overlay-prom::before {
+    content: '';
+    position: absolute;
+    width: 350%;
+    height: 350%;
+    top: -140%;
+    left: -140%;
+    background:
+        repeating-radial-gradient(circle, transparent 0, transparent 30px, rgba(255,215,0,0.25) 38px, rgba(255,215,0,0.25) 45px),
+        repeating-linear-gradient(45deg, transparent 0, transparent 120px, rgba(255,215,0,0.35) 130px, rgba(255,215,0,0.35) 200px);
+    background-size: 180px 180px;
+    animation: batikRoll 90s linear infinite;
+}
+
+@keyframes batikRoll {
+    0% { transform: rotate(0) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+/* PARTICLES */
+#particles-prom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -7;
+}
+
+.particle-prom {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+}
+
+/* HERO */
+.hero {
+    padding: 60px 20px;
+}
+
+.hero-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: #f5d76e;
+    font-family: 'Cardo', serif;
+}
+
+/* CARD BERITA */
+.card-feature {
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 15px;
+    transition: all .4s ease;
+    max-width: 330px;
+    margin: auto;
+    cursor: pointer;
+}
+
+.card-feature:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 0 25px rgba(255,215,0,0.6);
+    border-color: #ffd700;
+}
+
+.card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.card-title-new {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffe599;
+    margin-top: 10px;
+    font-family: 'Cardo', serif;
+}
+
+.card-text-new {
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.row.g-4 {
+    justify-content: center;
+}
+
+@media(max-width:768px) {
+    .card-feature { max-width: 90%; }
+    .card-img-top { height: 180px; }
+}
+
+/* FOOTER */
+.footer {
+    padding: 20px;
+    font-size: 14px;
+    color: #fff;
+    background: rgba(0,0,0,0.3);
+}
+.footer a {
+    color: #ffd700;
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND PROM -->
+<div class="prom-gradient"></div>
+<div class="batik-overlay-prom"></div>
+<div id="particles-prom"></div>
+
+<script>
+const wrap = document.getElementById("particles-prom");
+const total = 80;
+const pts = [];
+
+for (let i = 0; i < total; i++) {
+    const el = document.createElement("div");
+    el.className = "particle-prom";
+    el.style.width = el.style.height = (Math.random() * 5 + 2) + "px";
+    el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.top = Math.random() * window.innerHeight + "px";
+    el.speedX = (Math.random() - 0.5) * 0.7;
+    el.speedY = (Math.random() - 0.5) * 0.7;
+    wrap.appendChild(el);
+    pts.push(el);
+}
+
+function animParticles() {
+    pts.forEach(p => {
+        let x = p.offsetLeft + p.speedX * 7;
+        let y = p.offsetTop + p.speedY * 7;
+        if (x < 0) x = window.innerWidth;
+        if (x > window.innerWidth) x = 0;
+        if (y < 0) y = window.innerHeight;
+        if (y > window.innerHeight) y = 0;
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+    });
+    requestAnimationFrame(animParticles);
+}
+animParticles();
+</script>
+
+<!-- HERO -->
+<section class="hero">
+    <h1 class="hero-title">Berita Wisata Bojonegoro</h1>
+</section>
+
+<!-- CARDS -->
+<div class="container py-4">
+    <div class="row g-4 justify-content-center">
+        <!-- BERITA 1 -->
+        <div class="col-md-4">
+            <div class="card-feature" data-bs-toggle="modal" data-bs-target="#modalBerita1">
+                <img src="atas angin.jpeg" class="card-img-top" alt="">
+                <h5 class="card-title-new">Bumi Atas Angin Ramai Wisatawan</h5>
+                <p class="card-text-new">Wisata pegunungan di Desa Deling yang ramai dikunjungi saat libur Tahun Baru 2020.</p>
+            </div>
+        </div>
+        <!-- BERITA 2 -->
+        <div class="col-md-4">
+            <div class="card-feature" data-bs-toggle="modal" data-bs-target="#modalBerita2">
+                <img src="megahnya-masjid-an-nahdla-bojonegoro-3_169.jpeg" class="card-img-top" alt="">
+                <h5 class="card-title-new">Masjid An Nahdla Bojonegoro</h5>
+                <p class="card-text-new">Wisata religi dengan arsitektur modern yang menenangkan.</p>
+            </div>
+        </div>
+        <!-- BERITA 3 -->
+        <div class="col-md-4">
+            <div class="card-feature" data-bs-toggle="modal" data-bs-target="#modalBerita3">
+                <img src="grogoland.webp" class="card-img-top" alt="">
+                <h5 class="card-title-new">Wisata Growgoland Masih Eksis</h5>
+                <p class="card-text-new">Wisata air keluarga yang terus menjaga kenyamanan pengunjung.</p>
+            </div>
+        </div>
+        <!-- BERITA 4 -->
+        <div class="col-md-4">
+            <div class="card-feature" data-bs-toggle="modal" data-bs-target="#modalBerita4">
+                <img src="berita kebun belimbing1.jpg" class="card-img-top" alt="">
+                <h5 class="card-title-new">Agrowisata Kebun Belimbing</h5>
+                <p class="card-text-new">Dari kebun perorangan menjadi destinasi agrowisata unggulan.</p>
+            </div>
+        </div>
+        <!-- BERITA 5 -->
+        <div class="col-md-4">
+            <div class="card-feature" data-bs-toggle="modal" data-bs-target="#modalBerita5">
+                <img src="berita bendungan gerak.webp" class="card-img-top" alt="">
+                <h5 class="card-title-new">Keindahan Bendungan Gerak</h5>
+                <p class="card-text-new">Destinasi romantis dengan panorama alam memikat.</p>
+            </div>
+        </div>
+        <!-- BERITA 6 -->
+        <div class="col-md-4">
+            <div class="card-feature" data-bs-toggle="modal" data-bs-target="#modalBerita6">
+                <img src="berita wonocolo.jpeg" class="card-img-top" alt="">
+                <h5 class="card-title-new">Desa Wonocolo Wisata Migas</h5>
+                <p class="card-text-new">Pusat wisata migas pertama di Indonesia yang diminati wisatawan.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS -->
+<!-- MODAL 1 -->
+<div class="modal fade" id="modalBerita1" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title">Bumi Atas Angin Ramai Wisatawan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Bojonegoro - Satu lagi wisata Bojonegoro yang banyak dikunjungi wisatawan pada libur Tahun Baru 2020 yakni Wisata Bumi Atas Angin di Desa Deling, Kecamatan Sekar.</p>
+        <a target="_blank" href="https://bojonegorokab.go.id/berita/4283/bumi-atas-angin-juga-ramai-dikunjungi-wisatawan" class="btn btn-primary w-100">Baca Sumber</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL 2 -->
+<div class="modal fade" id="modalBerita2" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title">Masjid An Nahdla Bojonegoro</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Perpaduan arsitektur modern dan nuansa spiritual yang menenangkan, menjadikannya sebagai salah satu wisata religi yang tak pernah gagal menghipnotis setiap pengunjung yang datang mampir.</p>
+        <a target="_blank" href="https://www.detik.com/jatim/wisata/d-8065961/serba-serbi-masjid-an-nahdla-bojonegoro" class="btn btn-primary w-100">Baca Sumber</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL 3 -->
+<div class="modal fade" id="modalBerita3" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title">Wisata Growgoland Masih Eksis</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Salah satu desa wisata yang masih eksis ialah Wisata Growgoland Waterfun. Wisata yang dibuka sejak 2015 itu mampu terus mengembangkan dan menjaga agar para pengunjung tidak bosan datang ke Growgoland.</p>
+        <a target="_blank" href="https://radarbojonegoro.jawapos.com/weekend/715009312/wisata-growgoland-masih-eksis-berencana-menata-warung-warung-agar-tampak-rapi" class="btn btn-primary w-100">Baca Sumber</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL 4 -->
+<div class="modal fade" id="modalBerita4" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title">Agrowisata Kebun Belimbing</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Terletak di Desa Ngringinrejo, Kecamatan Kalitidu, Kabupaten Bojonegoro, Agrowisata Kebun Belimbing telah berkembang dari sekadar kebun milik perorangan menjadi salah satu destinasi agrowisata unggulan di Jawa Timur.</p>
+        <a target="_blank" href="https://radarbojonegoro.jawapos.com/life-style/715033555/agrowisata-kebun-belimbing-ngringinrejo-berawal-dari-kebun-perorangan-menjadi-destinasi-wisata" class="btn btn-primary w-100">Baca Sumber</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL 5 -->
+<div class="modal fade" id="modalBerita5" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title">Keindahan Bendungan Gerak</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Bendungan Gerak Bojonegoro adalah sebuah persembahan alam yang memikat, terletak di tengah sungai Bengawan Solo. Menyuguhkan panorama alam yang memesona, Bendungan Gerak menarik banyak wisatawan.</p>
+        <a target="_blank" href="https://www.gemasulawesi.com/id/kupas-tuntas/24944/keindahan-bendungan-gerak-di-bojonegoro-destinasi-wisata-romantis-yang-memikat-hati-bagi-pengunjungnya" class="btn btn-primary w-100">Baca Sumber</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL 6 -->
+<div class="modal fade" id="modalBerita6" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title">Desa Wonocolo Wisata Migas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Sejak resmi dibuka oleh Pemerintah Kabupaten (Pemkab) Bojonegoro sebagai Pusat Wisata Migas pertama di Indonesia, Desa Wonocolo menjadi lokasi yang diminati wisatawan baik dalam negeri maupun mancanegara.</p>
+        <a target="_blank" href="https://www.liputan6.com/bisnis/read/3593334/mengintip-desa-wonocolo-tambang-minyak-texas-ala-indonesia" class="btn btn-primary w-100">Baca Sumber</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  &copy; 2025 Devina Andra Salsabela 21 - Fahma Alfiatul Fauziah 24<br>
+  Kontak: <a href="tel:081217391752">081217391752</a> - <a href="tel:082333878790">082333878790</a><br>
+  Alamat Sekolah: Jalan Patimura No.3, Sumbang, Bojonegoro, Jawa Timur 62115, Indonesia<br>
+  Email: <a href="mailto:salsa&fahma@gmail.com">salsa&fahma@gmail.com</a>
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
